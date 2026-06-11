@@ -1,4 +1,6 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = (
     "postgresql://appadmin:appadmin@localhost:5432/stock_manager"
@@ -6,9 +8,10 @@ DATABASE_URL = (
 
 engine = create_engine(DATABASE_URL)
 
-try:
-    conn = engine.connect()
-    print("DB Connected!")
-    conn.close()
-except Exception as e:
-    print(e)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
