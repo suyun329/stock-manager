@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 
 from sqlalchemy.orm import Session
 
@@ -8,6 +7,7 @@ from app.core.deps import get_db
 from app.models.trade import Trade
 from app.schemas.trade import TradeCreate
 from app.services.portfolio_service import calculate_portfolio
+from app.schemas.portfolio import PortfolioResponse
 
 router = APIRouter()
 
@@ -35,7 +35,7 @@ def get_trades(
 ):
     return db.query(Trade).all()
 
-@router.get("/portfolio/{ticker}")
+@router.get("/portfolio/{ticker}", response_model=PortfolioResponse)
 def get_portfolio(
     ticker: str,
     db: Session = Depends(get_db)
