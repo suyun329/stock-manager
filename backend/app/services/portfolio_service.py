@@ -13,6 +13,7 @@ def calculate_portfolio(db: Session, ticker: str):
     sell_qty = 0
     total_buy_amount = 0 # 총 구매 금액
     total_buy_quantity = 0 # 총 구매 수량
+    current_price = 120.0 # (임시) 현재가
 
     for trade in trades:
         if trade.trade_type.upper() == "BUY":
@@ -24,6 +25,8 @@ def calculate_portfolio(db: Session, ticker: str):
         elif trade.trade_type.upper() == "SELL":
             sell_qty += trade.quantity
 
+    quantity = buy_qty - sell_qty
+
     avg_buy_price = (
         total_buy_amount / total_buy_quantity
         if total_buy_quantity > 0
@@ -31,13 +34,15 @@ def calculate_portfolio(db: Session, ticker: str):
     )
 
     invested_amount = total_buy_amount
+    current_value = quantity * current_price # 평가 금액
+    profit_loss = current_value - invested_amount
 
 
     return {
         "ticker": ticker,
-        "quantity": buy_qty - sell_qty,
-        "avg_buy_price": round(avg_buy_price, 2),
-        "invested_amount": round(invested_amount, 2),
-        # "avg_buy_price(평균 단가)"
-        # "invested_amount(투자 원금)
+        "quantity": quantity,
+        "avg_buy_price": round(avg_buy_price, 2), # 평균 단가
+        "invested_amount": round(invested_amount, 2), # 투자 원금
+        "current_price": round(current_price, 2), # 현재가
+        "profit_loss": round(profit_loss, 2) # 손익
     }
