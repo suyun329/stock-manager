@@ -8,3 +8,4 @@ class PortfolioResponse(BaseModel):
     invested_amount: float # 투자 원금
     current_price: float # 현재가
     profit_loss: float # 손익
+    profit_rate: float # 수익률
