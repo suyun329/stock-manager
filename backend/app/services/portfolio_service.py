@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.trade import Trade
+from app.services.price_service import get_current_price
 
 def calculate_portfolio(db: Session, ticker: str):
     trades = (
@@ -13,7 +14,7 @@ def calculate_portfolio(db: Session, ticker: str):
     sell_qty = 0
     total_buy_amount = 0 # 총 구매 금액
     total_buy_quantity = 0 # 총 구매 수량
-    current_price = 120.0 # (임시) 현재가
+    current_price = get_current_price(ticker)
 
     for trade in trades:
         if trade.trade_type.upper() == "BUY":
