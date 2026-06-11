@@ -7,6 +7,7 @@ from app.core.deps import get_db
 
 from app.models.trade import Trade
 from app.schemas.trade import TradeCreate
+from app.services.portfolio_service import calculate_portfolio
 
 router = APIRouter()
 
@@ -39,24 +40,7 @@ def get_portfolio(
     ticker: str,
     db: Session = Depends(get_db)
 ):
-    trades =(
-        db.query(Trade)
-        .filter(Trade.ticker == ticker)
-        .all()
-    )
-
-    holding_quantity = 0
-
-    for trade in trades:
-        if trade.trade_type.upper() == "BUY":
-            holding_quantity += trade.quantity
-        elif trade.trade_type.upper() == "SELL":
-            holding_quantity -= trade.quantity
-
-    return {
-        "ticker": ticker,
-        "holding_quantity": holding_quantity
-    }
+    return calculate_portfolio(db, ticker)
 
 
 
