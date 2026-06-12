@@ -34,9 +34,9 @@ def calculate_portfolio(db: Session, ticker: str):
         else 0
     )
 
-    invested_amount = total_buy_amount
-    current_value = quantity * current_price # 평가 금액
-    profit_loss = current_value - invested_amount # 손익 계산
+    invested_amount = quantity * avg_buy_price # 투자 원금
+    evaluation_amount = quantity * current_price # 평가 금액
+    profit_loss = evaluation_amount - invested_amount # 손익 계산
     profit_rate = ( # 수익률 계산
         (profit_loss / invested_amount) * 100
         if invested_amount > 0 # 존재하지 않는 거래 조회 시 예외처리
@@ -50,7 +50,7 @@ def calculate_portfolio(db: Session, ticker: str):
         "avg_buy_price": round(avg_buy_price, 2), # 평균 단가
         "invested_amount": round(invested_amount, 2), # 투자 원금
         "current_price": round(current_price, 2), # 현재가
-        "current_value": round(current_value, 2), # 평가 금액
+        "evaluation_amount": round(evaluation_amount, 2), # 평가 금액
         "profit_loss": round(profit_loss, 2), # 손익
         "profit_rate": round(profit_rate, 2) # 수익률
     }
@@ -79,7 +79,7 @@ def calculate_portfolio_summary(db: Session):
     )
 
     total_evaluation = sum(
-        p["current_value"]
+        p["evaluation_amount"]
         for p in portfolio_list
     )
 
