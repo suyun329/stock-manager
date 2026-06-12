@@ -53,3 +53,18 @@ def calculate_portfolio(db: Session, ticker: str):
         "profit_loss": round(profit_loss, 2), # 손익
         "profit_rate": round(profit_rate, 2) # 수익률
     }
+
+def get_all_portfolios(db: Session):
+    tickers = (
+        db.query(Trade.ticker)
+        .distinct() # 중복 제거하여 고유한 ticker 목록 가져오기
+        .all()
+    )
+
+    portfolios = []
+
+    for ticker in tickers:
+        portfolio = calculate_portfolio(db, ticker[0])
+        portfolios.append(portfolio)
+
+    return portfolios
