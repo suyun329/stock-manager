@@ -6,8 +6,8 @@ from app.core.deps import get_db
 
 from app.models.trade import Trade
 from app.schemas.trade import TradeCreate
-from app.services.portfolio_service import calculate_portfolio, get_all_portfolios
-from app.schemas.portfolio import PortfolioResponse
+from app.services.portfolio_service import calculate_portfolio, calculate_all_portfolios, calculate_portfolio_summary
+from app.schemas.portfolio import PortfolioResponse, PortfolioSummaryResponse
 
 router = APIRouter()
 
@@ -35,15 +35,21 @@ def get_trades(
 ):
     return db.query(Trade).all()
 
+@router.get("/portfolio", response_model=list[PortfolioResponse])
+def get_all_portfolios(
+    db: Session = Depends(get_db)
+):
+    return calculate_all_portfolios(db)
+
+@router.get("/portfolio/summary", response_model=PortfolioSummaryResponse)
+def get_portfolio_summary(
+    db: Session = Depends(get_db)
+):
+    return calculate_portfolio_summary(db)
+
 @router.get("/portfolio/{ticker}", response_model=PortfolioResponse)
 def get_portfolio(
     ticker: str,
     db: Session = Depends(get_db)
 ):
     return calculate_portfolio(db, ticker)
-
-@router.get("/portfolio", response_model=list[PortfolioResponse])
-def get_all_portfolios_api(
-    db: Session = Depends(get_db)
-):
-    return get_all_portfolios(db)

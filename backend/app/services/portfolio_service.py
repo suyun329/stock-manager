@@ -50,11 +50,12 @@ def calculate_portfolio(db: Session, ticker: str):
         "avg_buy_price": round(avg_buy_price, 2), # 평균 단가
         "invested_amount": round(invested_amount, 2), # 투자 원금
         "current_price": round(current_price, 2), # 현재가
+        "current_value": round(current_value, 2), # 평가 금액
         "profit_loss": round(profit_loss, 2), # 손익
         "profit_rate": round(profit_rate, 2) # 수익률
     }
 
-def get_all_portfolios(db: Session):
+def calculate_all_portfolios(db: Session):
     tickers = (
         db.query(Trade.ticker)
         .distinct() # 중복 제거하여 고유한 ticker 목록 가져오기
@@ -68,3 +69,31 @@ def get_all_portfolios(db: Session):
         portfolios.append(portfolio)
 
     return portfolios
+
+def calculate_portfolio_summary(db: Session):
+    portfolio_list = calculate_all_portfolios(db)
+
+    total_invested = sum(
+        p["invested_amount"]
+        for p in portfolio_list
+    )
+
+    total_evaluation = sum(
+        p["current_value"]
+        for p in portfolio_list
+    )
+
+    total_profit_loss = (total_evaluation - total_invested)
+
+    total_return_rate = (
+        total_profit_loss / total_invested * 100
+        if total_invested > 0
+        else 0
+    )
+
+    return {
+        "total_invested": round(total_invested, 2),
+        "total_evaluation": round(total_evaluation, 2),
+        "total_profit_loss": round(total_profit_loss, 2),
+        "total_return_rate": round(total_return_rate, 2)
+    }

@@ -9,3 +9,9 @@ class PortfolioResponse(BaseModel):
     current_price: float # 현재가
     profit_loss: float # 손익
     profit_rate: float # 수익률
+
+class PortfolioSummaryResponse(BaseModel):
+    total_invested: float
+    total_evaluation: float # 총 평가 금액
+    total_profit_loss: float
+    total_return_rate: float
