@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
 
 from app.models.trade import Trade
-from app.schemas.trade import TradeCreate
+from app.schemas.trade import TradeCreate,  TradeResponse
 from app.services.portfolio_service import calculate_portfolio, calculate_all_portfolios, calculate_portfolio_summary
+from app.services.trade_service import update_trade, delete_trade
 from app.schemas.portfolio import PortfolioResponse, PortfolioSummaryResponse
 
 router = APIRouter()
@@ -53,3 +54,34 @@ def get_portfolio(
     db: Session = Depends(get_db)
 ):
     return calculate_portfolio(db, ticker)
+
+@router.put("/trades/{trade_id}", response_model=TradeResponse)
+def update_trade_endpoint(
+    trade_id: int,
+    trade_data: TradeCreate,
+    db: Session = Depends(get_db)
+):
+    trade = update_trade(db, trade_id, trade_data)
+
+    if not trade:
+        raise HTTPException(
+            status_code=404,
+            detail="Trade not found"
+        )
+
+    return trade
+
+@router.delete("/trades/{trade_id}")
+def delete_trade_endpoint(
+    trade_id: int,
+    db: Session = Depends(get_db)
+):
+    result = delete_trade(db, trade_id)
+
+    if not result:
+        raise HTTPException(
+            status_code=404,
+            detail="Trade not found"
+        )
+
+    return result
