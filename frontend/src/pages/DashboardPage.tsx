@@ -1,0 +1,56 @@
+import { useQuery } from '@tanstack/react-query'
+import { getAllPortfolios, getPortfolioSummary } from '@/api/portfolio'
+import SummaryCards from '@/components/SummaryCards'
+import PortfolioCard from '@/components/PortfolioCard'
+
+export default function DashboardPage() {
+  const { data: summary, isLoading: summaryLoading } = useQuery({
+    queryKey: ['portfolio', 'summary'],
+    queryFn: getPortfolioSummary,
+  })
+
+  const { data: portfolios, isLoading: portfolioLoading } = useQuery({
+    queryKey: ['portfolio', 'all'],
+    queryFn: getAllPortfolios,
+  })
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">포트폴리오 현황</h1>
+        <p className="text-sm text-gray-400 mt-1">실시간 주가 기준으로 계산됩니다.</p>
+      </div>
+
+      {summaryLoading ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white rounded-xl p-5 border border-gray-100 h-24 animate-pulse" />
+          ))}
+        </div>
+      ) : summary ? (
+        <SummaryCards summary={summary} />
+      ) : null}
+
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">종목별 현황</h2>
+        {portfolioLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-xl border border-gray-100 h-48 animate-pulse" />
+            ))}
+          </div>
+        ) : portfolios && portfolios.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {portfolios.map((item) => (
+              <PortfolioCard key={item.ticker} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-gray-400">
+            아직 매매 기록이 없습니다. 매매 내역 탭에서 추가해보세요.
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
