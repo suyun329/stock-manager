@@ -4,11 +4,12 @@ from pydantic import BaseModel
 class PortfolioResponse(BaseModel):
     ticker: str
     quantity: int
-    avg_buy_price: float # 평균 단가
-    invested_amount: float # 투자 원금
-    current_price: float # 현재가
-    profit_loss: float # 손익
-    profit_rate: float # 수익률
+    avg_buy_price: float
+    invested_amount: float
+    current_price: float
+    evaluation_amount: float
+    profit_loss: float
+    profit_rate: float
 
 class PortfolioSummaryResponse(BaseModel):
     total_invested: float
