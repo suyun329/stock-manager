@@ -3,6 +3,7 @@ import { Bot, RefreshCw } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { getAIFeedback } from '@/api/feedback'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   ticker: string
@@ -49,8 +50,8 @@ export default function AIFeedbackCard({ ticker }: Props) {
       )}
 
       {data && !isFetching && (
-        <div className="bg-indigo-50 rounded-lg px-4 py-3 text-sm text-indigo-900 leading-relaxed">
-          {data.feedback}
+        <div className="bg-indigo-50 rounded-lg px-4 py-3 text-sm text-indigo-900 leading-relaxed prose prose-sm prose-indigo max-w-none">
+          <ReactMarkdown>{data.feedback}</ReactMarkdown>
         </div>
       )}
 
