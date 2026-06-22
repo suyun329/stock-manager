@@ -1,23 +1,47 @@
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+from sqlalchemy.orm import Session
 from app.services.portfolio_service import calculate_portfolio
+from app.models.trade import Trade
 
-def generate_feedback(profit_rate: float) -> str:
-    if profit_rate >= 20:
-        return "수익률이 높습니다. 일부 수익 실현을 고려해볼 수 있습니다."
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v1",
+    api_key=os.getenv("GROQ_API_KEY"),
+)
 
-    elif profit_rate >= 0:
-        return "양호한 수익 구간입니다. 보유 전략을 유지할 수 있습니다."
+def build_prompt(ticker: str, portfolio: dict, trades: list) -> str:
+    trade_lines = "\n".join([
+        f"- {'매수' if t.trade_type.upper() == 'BUY' else '매도'} {t.quantity}주 @ ${t.price}"
+        for t in trades
+    ])
+    return f"""당신은 투자 습관 분석 전문가입니다. 아래 사용자의 {ticker} 주식 매매 데이터를 분석하고 투자 습관에 대한 피드백을 2~3문장으로 한국어로 작성해주세요.
 
-    else:
-        return "손실 상태입니다. 투자 근거를 다시 점검해보세요."
-    
+매매 이력:
+{trade_lines}
 
-def get_ai_feedback(db, ticker):
+포트폴리오 현황:
+- 보유 수량: {portfolio['quantity']}주
+- 평균 매수 단가: ${portfolio['avg_buy_price']}
+- 현재가: ${portfolio['current_price']}
+- 투자 원금: ${portfolio['invested_amount']}
+- 평가 금액: ${portfolio['evaluation_amount']}
+- 수익률: {portfolio['profit_rate']}%
+
+투자 습관(매매 패턴, 리스크 관리, 개선점 등)에 대한 피드백을 작성해주세요."""
+
+def get_ai_feedback(db: Session, ticker: str):
     portfolio = calculate_portfolio(db, ticker)
-
-    feedback = generate_feedback(
-        portfolio["profit_rate"]
+    trades = db.query(Trade).filter(Trade.ticker == ticker).all()
+    prompt = build_prompt(ticker, portfolio, trades)
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}],
     )
-
+    feedback = response.choices[0].message.content
     return {
         "ticker": ticker,
         "profit_rate": portfolio["profit_rate"],
