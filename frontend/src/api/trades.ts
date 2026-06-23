@@ -8,6 +8,8 @@ export interface Trade {
   trade_type: string
   quantity: number
   price: number
+  market: string
+  trade_date: string | null
 }
 
 export interface TradeCreate {
@@ -15,6 +17,8 @@ export interface TradeCreate {
   trade_type: string
   quantity: number
   price: number
+  market: string
+  trade_date: string | null
 }
 
 export const getTrades = async (): Promise<Trade[]> => {

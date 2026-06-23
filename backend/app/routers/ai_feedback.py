@@ -13,4 +13,4 @@ def ai_feedback(
     ticker: str,
     db: Session = Depends(get_db)
 ):
-    return get_ai_feedback(db, ticker)
+    return get_ai_feedback(db, ticker.upper())

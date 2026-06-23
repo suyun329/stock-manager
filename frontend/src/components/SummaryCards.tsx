@@ -12,31 +12,31 @@ export default function SummaryCards({ summary }: Props) {
   const cards = [
     {
       label: '총 투자금',
-      value: formatCurrency(summary.total_invested),
+      value: formatCurrency(summary.total_invested, summary.currency as 'USD' | 'KRW'),
       icon: Wallet,
       color: 'text-gray-600',
       bg: 'bg-gray-50',
     },
     {
       label: '평가 금액',
-      value: formatCurrency(summary.total_evaluation),
+      value: formatCurrency(summary.total_evaluation, summary.currency as 'USD' | 'KRW'),
       icon: BarChart3,
       color: 'text-indigo-600',
       bg: 'bg-indigo-50',
     },
     {
       label: '총 손익',
-      value: formatCurrency(summary.total_profit_loss),
+      value: formatCurrency(summary.total_profit_loss, summary.currency as 'USD' | 'KRW'),
       icon: isProfit ? TrendingUp : TrendingDown,
-      color: isProfit ? 'text-emerald-600' : 'text-red-500',
-      bg: isProfit ? 'bg-emerald-50' : 'bg-red-50',
+      color: isProfit ? 'text-red-600' : 'text-blue-600',
+      bg: isProfit ? 'bg-red-50' : 'bg-blue-50',
     },
     {
       label: '수익률',
       value: formatPercent(summary.total_return_rate),
       icon: isProfit ? TrendingUp : TrendingDown,
-      color: isProfit ? 'text-emerald-600' : 'text-red-500',
-      bg: isProfit ? 'bg-emerald-50' : 'bg-red-50',
+      color: isProfit ? 'text-red-600' : 'text-blue-600',
+      bg: isProfit ? 'bg-red-50' : 'bg-blue-50',
     },
   ]
 

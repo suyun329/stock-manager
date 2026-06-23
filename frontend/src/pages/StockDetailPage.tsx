@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
 import { getPortfolioByTicker } from '@/api/portfolio'
 import { getTrades } from '@/api/trades'
+import { getStockNames } from '@/api/stocks'
 import AIFeedbackCard from '@/components/AIFeedbackCard'
 import TradeTable from '@/components/TradeTable'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
@@ -22,24 +23,28 @@ export default function StockDetailPage() {
     queryFn: getTrades,
   })
 
+  const { data: stockNames = {} } = useQuery({
+    queryKey: ['stock-names', [ticker]],
+    queryFn: () => getStockNames([ticker]),
+    enabled: !!ticker,
+  })
+
   const tickerTrades = allTrades?.filter(
     (t) => t.ticker.toUpperCase() === ticker.toUpperCase(),
   ) ?? []
 
   const isProfit = (portfolio?.profit_rate ?? 0) >= 0
+  const currency = portfolio?.currency as 'USD' | 'KRW' ?? 'USD'
+  const stockName = stockNames[ticker]
 
   const stats = portfolio
     ? [
-        { label: '현재가', value: formatCurrency(portfolio.current_price) },
-        { label: '평균 단가', value: formatCurrency(portfolio.avg_buy_price) },
+        { label: '현재가', value: formatCurrency(portfolio.current_price, currency) },
+        { label: '평균 단가', value: formatCurrency(portfolio.avg_buy_price, currency) },
         { label: '보유 수량', value: `${portfolio.quantity}주` },
-        { label: '투자 원금', value: formatCurrency(portfolio.invested_amount) },
-        { label: '평가 금액', value: formatCurrency(portfolio.evaluation_amount) },
-        {
-          label: '손익',
-          value: formatCurrency(portfolio.profit_loss),
-          colored: true,
-        },
+        { label: '투자 원금', value: formatCurrency(portfolio.invested_amount, currency) },
+        { label: '평가 금액', value: formatCurrency(portfolio.evaluation_amount, currency) },
+        { label: '손익', value: formatCurrency(portfolio.profit_loss, currency), colored: true },
       ]
     : []
 
@@ -59,12 +64,17 @@ export default function StockDetailPage() {
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-start justify-between mb-5">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{ticker}</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {stockName ?? ticker}
+                </h1>
+                {stockName && (
+                  <p className="text-sm text-gray-400 mt-0.5">{ticker} · {portfolio.market}</p>
+                )}
               </div>
               <div
                 className={cn(
                   'flex items-center gap-1.5 text-lg font-bold px-3 py-1.5 rounded-lg',
-                  isProfit ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500',
+                  isProfit ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600',
                 )}
               >
                 {isProfit ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
@@ -80,7 +90,7 @@ export default function StockDetailPage() {
                     className={cn(
                       'font-semibold text-base',
                       colored
-                        ? isProfit ? 'text-emerald-600' : 'text-red-500'
+                        ? isProfit ? 'text-red-600' : 'text-blue-600'
                         : 'text-gray-900',
                     )}
                   >
@@ -95,7 +105,7 @@ export default function StockDetailPage() {
 
           <div>
             <h2 className="text-lg font-semibold text-gray-800 mb-3">매매 이력</h2>
-            <TradeTable trades={tickerTrades} />
+            <TradeTable trades={tickerTrades} stockNames={stockNames} />
           </div>
         </>
       ) : (

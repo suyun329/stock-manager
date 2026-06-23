@@ -3,6 +3,8 @@ from pydantic import BaseModel
 
 class PortfolioResponse(BaseModel):
     ticker: str
+    market: str
+    currency: str
     quantity: int
     avg_buy_price: float
     invested_amount: float
@@ -13,6 +15,7 @@ class PortfolioResponse(BaseModel):
 
 class PortfolioSummaryResponse(BaseModel):
     total_invested: float
-    total_evaluation: float # 총 평가 금액
+    total_evaluation: float
     total_profit_loss: float
     total_return_rate: float
+    currency: str

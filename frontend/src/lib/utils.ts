@@ -5,11 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(value: number): string {
+export function formatCurrency(value: number, currency: 'USD' | 'KRW' = 'USD'): string {
   return new Intl.NumberFormat('ko-KR', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
+    currency,
+    minimumFractionDigits: currency === 'KRW' ? 0 : 2,
+    maximumFractionDigits: currency === 'KRW' ? 0 : 2,
   }).format(value)
 }
 

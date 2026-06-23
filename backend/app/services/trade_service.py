@@ -13,6 +13,8 @@ def update_trade(db: Session, trade_id: int, trade_data: TradeCreate):
     trade.quantity = trade_data.quantity
     trade.price = trade_data.price
     trade.trade_type = trade_data.trade_type
+    trade.market = trade_data.market
+    trade.trade_date = trade_data.trade_date
 
     db.commit()
     db.refresh(trade)

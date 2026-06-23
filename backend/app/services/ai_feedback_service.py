@@ -15,6 +15,7 @@ client = OpenAI(
 def build_prompt(ticker: str, portfolio: dict, trades: list) -> str:
     trade_lines = "\n".join([
         f"- {'매수' if t.trade_type.upper() == 'BUY' else '매도'} {t.quantity}주 @ ${t.price}"
+        + (f" ({t.trade_date})" if t.trade_date else "")
         for t in trades
     ])
     return f"""당신은 투자 습관 분석 전문가입니다. 아래 사용자의 {ticker} 주식 매매 데이터를 분석하고 투자 습관에 대한 피드백을 2~3문장으로 한국어로 작성해주세요.

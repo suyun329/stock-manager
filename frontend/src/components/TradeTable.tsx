@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteTrade, type Trade } from '@/api/trades'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 import TradeFormModal from './TradeFormModal'
 
 interface Props {
   trades: Trade[]
+  stockNames?: Record<string, string>
 }
 
-export default function TradeTable({ trades }: Props) {
+export default function TradeTable({ trades, stockNames = {} }: Props) {
   const qc = useQueryClient()
   const [editing, setEditing] = useState<Trade | null>(null)
   const [showModal, setShowModal] = useState(false)
@@ -39,18 +40,22 @@ export default function TradeTable({ trades }: Props) {
         <table className="w-full text-sm bg-white">
           <thead>
             <tr className="border-b border-gray-100 text-gray-500 text-left">
-              <th className="px-4 py-3 font-medium">티커</th>
+              <th className="px-4 py-3 font-medium">종목</th>
               <th className="px-4 py-3 font-medium">구분</th>
               <th className="px-4 py-3 font-medium text-right">수량</th>
               <th className="px-4 py-3 font-medium text-right">단가</th>
               <th className="px-4 py-3 font-medium text-right">금액</th>
+              <th className="px-4 py-3 font-medium">날짜</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
             {trades.map((t) => (
               <tr key={t.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <td className="px-4 py-3 font-semibold text-gray-900">{t.ticker}</td>
+                <td className="px-4 py-3">
+                  <div className="font-semibold text-gray-900">{stockNames[t.ticker] ?? t.ticker}</div>
+                  <div className="text-xs text-gray-400">{t.ticker}</div>
+                </td>
                 <td className="px-4 py-3">
                   <span
                     className={cn(
@@ -64,9 +69,14 @@ export default function TradeTable({ trades }: Props) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right text-gray-700">{t.quantity}주</td>
-                <td className="px-4 py-3 text-right text-gray-700">${t.price.toFixed(2)}</td>
                 <td className="px-4 py-3 text-right text-gray-700">
-                  ${(t.quantity * t.price).toFixed(2)}
+                  {formatCurrency(t.price, ['KOSPI','KOSDAQ'].includes(t.market) ? 'KRW' : 'USD')}
+                </td>
+                <td className="px-4 py-3 text-right text-gray-700">
+                  {formatCurrency(t.quantity * t.price, ['KOSPI','KOSDAQ'].includes(t.market) ? 'KRW' : 'USD')}
+                </td>
+                <td className="px-4 py-3 text-gray-500 text-sm whitespace-nowrap">
+                  {t.trade_date ?? <span className="text-gray-300">-</span>}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-2">

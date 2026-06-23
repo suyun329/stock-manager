@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Query
+from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_db
@@ -17,11 +17,13 @@ def create_trade(
     trade: TradeCreate,
     db: Session = Depends(get_db)
 ):
-    trade_db = Trade( # 객체 생성
+    trade_db = Trade(
         ticker=trade.ticker,
         trade_type=trade.trade_type,
         quantity=trade.quantity,
-        price=trade.price
+        price=trade.price,
+        market=trade.market,
+        trade_date=trade.trade_date,
     )
 
     db.add(trade_db) # db 저장 준비
@@ -38,22 +40,24 @@ def get_trades(
 
 @router.get("/portfolio", response_model=list[PortfolioResponse])
 def get_all_portfolios(
+    market: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
-    return calculate_all_portfolios(db)
+    return calculate_all_portfolios(db, market_filter=market)
 
 @router.get("/portfolio/summary", response_model=PortfolioSummaryResponse)
 def get_portfolio_summary(
+    market: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
-    return calculate_portfolio_summary(db)
+    return calculate_portfolio_summary(db, market_filter=market)
 
 @router.get("/portfolio/{ticker}", response_model=PortfolioResponse)
 def get_portfolio(
     ticker: str,
     db: Session = Depends(get_db)
 ):
-    return calculate_portfolio(db, ticker)
+    return calculate_portfolio(db, ticker.upper())
 
 @router.put("/trades/{trade_id}", response_model=TradeResponse)
 def update_trade_endpoint(
