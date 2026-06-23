@@ -13,3 +13,8 @@ backend/.env
 
 # VS Code
 .vscode/
+
+# 로컬 실행 스크립트 및 런타임 파일
+*.command
+.backend.pid
+.frontend.pid
