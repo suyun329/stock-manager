@@ -133,7 +133,7 @@ export default function TradeFormModal({ onClose, editing }: Props) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/30 flex items-end md:items-center justify-center z-50"
+      className="fixed inset-0 bg-black/30 flex items-end md:items-center justify-center z-50 pb-16 md:pb-0"
       onClick={onClose}
     >
       <div
