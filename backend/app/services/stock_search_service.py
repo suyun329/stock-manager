@@ -20,7 +20,18 @@ def _load():
     except Exception:
         pass
 
-    for market in ('NASDAQ', 'NYSE'):
+    try:
+        etf_kr = fdr.StockListing('ETF/KR')
+        for _, row in etf_kr.iterrows():
+            results.append({
+                "ticker": str(row['Symbol']),
+                "name": str(row['Name']),
+                "market": "KOSPI",
+            })
+    except Exception:
+        pass
+
+    for market in ('NASDAQ', 'NYSE', 'AMEX'):
         try:
             df = fdr.StockListing(market)
             for _, row in df.iterrows():
