@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Date
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 
 from app.core.database import Base
 
@@ -13,3 +13,4 @@ class Trade(Base):
     price = Column(Float, nullable=False)
     market = Column(String, nullable=False, server_default="NASDAQ")
     trade_date = Column(Date, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)

@@ -33,9 +33,12 @@ def build_prompt(ticker: str, portfolio: dict, trades: list) -> str:
 
 투자 습관(매매 패턴, 리스크 관리, 개선점 등)에 대한 피드백을 작성해주세요."""
 
-def get_ai_feedback(db: Session, ticker: str):
-    portfolio = calculate_portfolio(db, ticker)
-    trades = db.query(Trade).filter(Trade.ticker == ticker).all()
+def get_ai_feedback(db: Session, ticker: str, user_id: int = None):
+    portfolio = calculate_portfolio(db, ticker, user_id=user_id)
+    query = db.query(Trade).filter(Trade.ticker == ticker)
+    if user_id is not None:
+        query = query.filter(Trade.user_id == user_id)
+    trades = query.all()
     prompt = build_prompt(ticker, portfolio, trades)
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",

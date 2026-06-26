@@ -7,8 +7,11 @@ KR_MARKETS = {"KOSPI", "KOSDAQ"}
 def get_currency(market: str) -> str:
     return "KRW" if market in KR_MARKETS else "USD"
 
-def calculate_portfolio(db: Session, ticker: str):
-    trades = db.query(Trade).filter(Trade.ticker == ticker).all()
+def calculate_portfolio(db: Session, ticker: str, user_id: int = None):
+    query = db.query(Trade).filter(Trade.ticker == ticker)
+    if user_id is not None:
+        query = query.filter(Trade.user_id == user_id)
+    trades = query.all()
     if not trades:
         return None
 
@@ -49,11 +52,14 @@ def calculate_portfolio(db: Session, ticker: str):
         "profit_rate": round(profit_rate, 2),
     }
 
-def calculate_all_portfolios(db: Session, market_filter: str = None):
-    tickers = db.query(Trade.ticker).distinct().all()
+def calculate_all_portfolios(db: Session, market_filter: str = None, user_id: int = None):
+    query = db.query(Trade.ticker).distinct()
+    if user_id is not None:
+        query = query.filter(Trade.user_id == user_id)
+    tickers = query.all()
     portfolios = []
     for (ticker,) in tickers:
-        portfolio = calculate_portfolio(db, ticker)
+        portfolio = calculate_portfolio(db, ticker, user_id=user_id)
         if not portfolio:
             continue
         if market_filter == "KR" and portfolio["market"] not in KR_MARKETS:
@@ -63,8 +69,8 @@ def calculate_all_portfolios(db: Session, market_filter: str = None):
         portfolios.append(portfolio)
     return portfolios
 
-def calculate_portfolio_summary(db: Session, market_filter: str = None):
-    portfolio_list = calculate_all_portfolios(db, market_filter)
+def calculate_portfolio_summary(db: Session, market_filter: str = None, user_id: int = None):
+    portfolio_list = calculate_all_portfolios(db, market_filter, user_id=user_id)
     currency = "KRW" if market_filter == "KR" else "USD"
 
     total_invested = sum(p["invested_amount"] for p in portfolio_list)

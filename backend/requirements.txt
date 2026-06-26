@@ -39,3 +39,7 @@ websockets==15.0.1
 yfinance==1.2.0
 openai
 finance-datareader
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+bcrypt==4.0.1
