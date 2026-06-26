@@ -36,7 +36,7 @@ export default function DashboardPage() {
     <div className="space-y-5 md:space-y-8">
       <div>
         <h1 className="text-xl md:text-2xl font-bold text-gray-900">포트폴리오 현황</h1>
-        <p className="text-xs md:text-sm text-gray-400 mt-1">실시간 주가 기준으로 계산됩니다.</p>
+        <p className="text-xs md:text-sm text-gray-400 mt-1">실시간 주가 기준으로 계산됩니다. 세금 및 거래 수수료는 반영되지 않습니다.</p>
       </div>
 
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">

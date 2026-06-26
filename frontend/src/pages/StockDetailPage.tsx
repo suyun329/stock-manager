@@ -97,6 +97,8 @@ export default function StockDetailPage() {
 
           <AIFeedbackCard ticker={ticker} />
 
+          <p className="text-xs text-gray-400">* 세금 및 거래 수수료는 손익에 반영되지 않습니다.</p>
+
           <div>
             <h2 className="text-lg font-semibold text-gray-800 mb-3">매매 이력</h2>
             <TradeTable trades={tickerTrades} stockNames={stockNames} />
