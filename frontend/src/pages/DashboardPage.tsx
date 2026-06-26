@@ -5,6 +5,7 @@ import { getStockNames } from '@/api/stocks'
 import SummaryCards from '@/components/SummaryCards'
 import PortfolioCard from '@/components/PortfolioCard'
 import { cn, applyFeesToPortfolio } from '@/lib/utils'
+import { useApplyFees } from '@/hooks/useApplyFees'
 import type { PortfolioSummary } from '@/api/portfolio'
 
 type MarketTab = 'US' | 'KR'
@@ -16,7 +17,7 @@ const TABS: { key: MarketTab; label: string }[] = [
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<MarketTab>('KR')
-  const [applyFees, setApplyFees] = useState(false)
+  const { applyFees, setApplyFees } = useApplyFees()
 
   const { data: summary, isLoading: summaryLoading } = useQuery({
     queryKey: ['portfolio', 'summary', activeTab],
@@ -76,24 +77,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* 수수료/세금 체크박스 */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3">
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={applyFees}
-            onChange={(e) => setApplyFees(e.target.checked)}
-            className="w-4 h-4 accent-indigo-600"
-          />
-          <span className="text-sm font-medium text-gray-700">수수료 및 세금 적용</span>
-        </label>
-        <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
-          {applyFees
-            ? '예상 세금 및 수수료가 적용 되었습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'
-            : '세금 및 거래 수수료는 반영되지 않습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'}
-        </p>
-      </div>
-
       {summaryLoading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
@@ -103,6 +86,24 @@ export default function DashboardPage() {
       ) : adjustedSummary ? (
         <SummaryCards summary={adjustedSummary} />
       ) : null}
+
+      {/* 수수료/세금 체크박스 */}
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={applyFees}
+            onChange={(e) => setApplyFees(e.target.checked)}
+            className="w-4 h-4 accent-indigo-600"
+          />
+          <span className="text-sm font-medium text-gray-700">세금 및 수수료 적용</span>
+        </label>
+        <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
+          {applyFees
+            ? '예상 세금 및 수수료가 적용 되었습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'
+            : '세금 및 거래 수수료는 반영되지 않습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'}
+        </p>
+      </div>
 
       <div>
         <h2 className="text-lg font-semibold text-gray-800 mb-4">종목별 현황</h2>

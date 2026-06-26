@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
@@ -8,11 +7,12 @@ import { getStockNames } from '@/api/stocks'
 import AIFeedbackCard from '@/components/AIFeedbackCard'
 import TradeTable from '@/components/TradeTable'
 import { cn, formatCurrency, formatPercent, applyFeesToPortfolio } from '@/lib/utils'
+import { useApplyFees } from '@/hooks/useApplyFees'
 
 export default function StockDetailPage() {
   const { ticker = '' } = useParams()
   const navigate = useNavigate()
-  const [applyFees, setApplyFees] = useState(false)
+  const { applyFees, setApplyFees } = useApplyFees()
 
   const { data: portfolio, isLoading } = useQuery({
     queryKey: ['portfolio', ticker],
@@ -99,24 +99,24 @@ export default function StockDetailPage() {
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* 수수료/세금 체크박스 */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={applyFees}
-                onChange={(e) => setApplyFees(e.target.checked)}
-                className="w-4 h-4 accent-indigo-600"
-              />
-              <span className="text-sm font-medium text-gray-700">수수료 및 세금 적용</span>
-            </label>
-            <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
-              {applyFees
-                ? '예상 세금 및 수수료가 적용 되었습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'
-                : '세금 및 거래 수수료는 반영되지 않습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'}
-            </p>
+            {/* 수수료/세금 체크박스 — 카드 하단 */}
+            <div className="border-t border-gray-100 mt-4 pt-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={applyFees}
+                  onChange={(e) => setApplyFees(e.target.checked)}
+                  className="w-4 h-4 accent-indigo-600"
+                />
+                <span className="text-sm font-medium text-gray-700">세금 및 수수료 적용</span>
+              </label>
+              <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
+                {applyFees
+                  ? '예상 세금 및 수수료가 적용 되었습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'
+                  : '세금 및 거래 수수료는 반영되지 않습니다. 실제 수익은 증권사를 통해 확인하시기 바랍니다.'}
+              </p>
+            </div>
           </div>
 
           <AIFeedbackCard ticker={ticker} />
