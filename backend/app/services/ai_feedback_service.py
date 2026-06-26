@@ -43,7 +43,13 @@ def get_ai_feedback(db: Session, ticker: str, user_id: int = None):
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         max_tokens=1024,
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an investment habit analyst. You must always respond in Korean (한국어) only. Never use any other language.",
+            },
+            {"role": "user", "content": prompt},
+        ],
     )
     feedback = response.choices[0].message.content
     return {
