@@ -21,7 +21,7 @@ export default function Sidebar() {
     <aside className="w-56 min-h-screen bg-white border-r border-gray-200 flex flex-col py-6 px-3">
       <div className="flex items-center gap-2 px-3 mb-8">
         <Bot className="text-indigo-600" size={22} />
-        <span className="font-semibold text-gray-900 text-base">StockAI</span>
+        <span className="font-semibold text-gray-900 text-base">AI Stock Manager</span>
       </div>
 
       <nav className="flex flex-col gap-1 flex-1">
