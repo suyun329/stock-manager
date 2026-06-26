@@ -61,39 +61,33 @@ export default function StockDetailPage() {
         <div className="h-40 bg-white rounded-xl border border-gray-100 animate-pulse" />
       ) : portfolio ? (
         <>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <div className="flex items-start justify-between mb-5">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6">
+            <div className="flex items-start justify-between mb-4 md:mb-5">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-xl md:text-3xl font-bold text-gray-900">
                   {stockName ?? ticker}
                 </h1>
                 {stockName && (
-                  <p className="text-sm text-gray-400 mt-0.5">{ticker} · {portfolio.market}</p>
+                  <p className="text-xs md:text-sm text-gray-400 mt-0.5">{ticker} · {portfolio.market}</p>
                 )}
               </div>
               <div
                 className={cn(
-                  'flex items-center gap-1.5 text-lg font-bold px-3 py-1.5 rounded-lg',
+                  'flex items-center gap-1 text-base md:text-lg font-bold px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg',
                   isProfit ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600',
                 )}
               >
-                {isProfit ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
+                {isProfit ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                 {formatPercent(portfolio.profit_rate)}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {stats.map(({ label, value, colored }) => (
-                <div key={label} className="bg-gray-50 rounded-lg p-4">
+                <div key={label} className="bg-gray-50 rounded-lg p-3 md:p-4">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
-                  <p
-                    className={cn(
-                      'font-semibold text-base',
-                      colored
-                        ? isProfit ? 'text-red-600' : 'text-blue-600'
-                        : 'text-gray-900',
-                    )}
-                  >
+                  <p className={cn('font-semibold text-sm md:text-base truncate',
+                    colored ? isProfit ? 'text-red-600' : 'text-blue-600' : 'text-gray-900')}>
                     {value}
                   </p>
                 </div>

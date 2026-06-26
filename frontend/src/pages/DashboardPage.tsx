@@ -33,10 +33,10 @@ export default function DashboardPage() {
   })
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 md:space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">포트폴리오 현황</h1>
-        <p className="text-sm text-gray-400 mt-1">실시간 주가 기준으로 계산됩니다.</p>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900">포트폴리오 현황</h1>
+        <p className="text-xs md:text-sm text-gray-400 mt-1">실시간 주가 기준으로 계산됩니다.</p>
       </div>
 
       <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">

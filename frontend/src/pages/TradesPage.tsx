@@ -37,20 +37,21 @@ export default function TradesPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 md:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">매매 내역</h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">매매 내역</h1>
+          <p className="text-xs md:text-sm text-gray-400 mt-1">
             {filteredTrades.length > 0 ? `총 ${filteredTrades.length}건` : '매매 기록이 없습니다'}
           </p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 md:px-4 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
         >
           <Plus size={16} />
-          매매 추가
+          <span className="hidden sm:inline">매매 추가</span>
+          <span className="sm:hidden">추가</span>
         </button>
       </div>
 

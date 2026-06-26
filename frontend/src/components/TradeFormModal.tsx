@@ -132,8 +132,14 @@ export default function TradeFormModal({ onClose, editing }: Props) {
     setForm((prev) => ({ ...prev, [field]: value }))
 
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+    <div
+      className="fixed inset-0 bg-black/30 flex items-end md:items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-t-2xl md:rounded-xl shadow-xl w-full md:max-w-md p-6 max-h-[92dvh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-semibold text-gray-900">
             {editing ? '매매 수정' : '매매 추가'}

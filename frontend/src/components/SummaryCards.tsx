@@ -43,14 +43,14 @@ export default function SummaryCards({ summary }: Props) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map(({ label, value, icon: Icon, color, bg }) => (
-        <div key={label} className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-500">{label}</span>
-            <div className={cn('p-2 rounded-lg', bg)}>
-              <Icon size={16} className={color} />
+        <div key={label} className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-2 md:mb-3">
+            <span className="text-xs md:text-sm text-gray-500">{label}</span>
+            <div className={cn('p-1.5 md:p-2 rounded-lg', bg)}>
+              <Icon size={14} className={color} />
             </div>
           </div>
-          <p className={cn('text-xl font-semibold', color)}>{value}</p>
+          <p className={cn('text-base md:text-xl font-semibold truncate', color)}>{value}</p>
         </div>
       ))}
     </div>
