@@ -252,6 +252,7 @@ export default function TradeFormModal({ onClose, editing }: Props) {
             <input
               type="date"
               value={form.trade_date ?? ''}
+              max={new Date().toISOString().split('T')[0]}
               onChange={(e) => setForm((prev) => ({ ...prev, trade_date: e.target.value || null }))}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
